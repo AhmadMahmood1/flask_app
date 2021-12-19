@@ -46,7 +46,7 @@ def stock(stock):
 # this route sends back list of users users
 @app.route("/user", methods=["GET"])
 @token_required
-def get_all_users(current_user):
+def get_all_users():
     # querying the database
     # for all the entries in it
     users = User.query.all()
