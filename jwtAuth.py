@@ -14,9 +14,9 @@ app = Flask(__name__)
 # configuration
 # NEVER HARDCODE YOUR CONFIGURATION IN YOUR CODE
 # INSTEAD CREATE A .env FILE AND STORE IN IT
-app.config['SECRET_KEY'] = '004f2af45d3a4e161a7dd2d17fdae47f'
+app.config['SECRET_KEY'] = os.getenv("APP_SECRET_KEY")
 # database name
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost/stocks"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # creates SQLALCHEMY object
 db = SQLAlchemy(app)

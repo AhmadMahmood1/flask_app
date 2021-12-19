@@ -1,16 +1,13 @@
 # AS simeple as possbile flask google oAuth 2.0
-from flask import Flask, redirect, url_for, session
+from flask import Flask, redirect, url_for, session,jsonify
+from flask.helpers import make_response
 from authlib.integrations.flask_client import OAuth
 import os
+import requests
 from datetime import timedelta
 
 # decorator for routes that should be accessible only by logged in users
 from auth_decorator import login_required
-
-# dotenv setup
-from dotenv import load_dotenv
-load_dotenv()
-
 
 # App config
 app = Flask(__name__)
@@ -41,6 +38,18 @@ def hello_world():
     email = dict(session)['profile']['email']
     return f'Hello, you are logge in as {email}!'
 
+@app.route('/ticker-detail/<stock>')
+def stock(stock):
+    url = f'https://api.polygon.io/v1/meta/symbols/{stock}/company?apiKey={os.getenv("POLYGON_API_KEY")}'
+    response = requests.get(url)
+    print(response.status_code)
+    if response.status_code==200:
+        data = response.json()
+        return make_response(data)
+    else:
+        return make_response(jsonify(status=response.status_code,message=f"{stock} does not exist"))
+
+
 
 @app.route('/login')
 def login():
@@ -68,3 +77,9 @@ def logout():
     for key in list(session.keys()):
         session.pop(key)
     return redirect('/')
+
+if __name__ == "__main__":
+	# setting debug to True enables hot reload
+	# and also provides a debuger shell
+	# if you hit an error while running the server
+	app.run(debug = True)
